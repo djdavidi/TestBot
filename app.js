@@ -1,19 +1,25 @@
 var CronJob = require('cron').CronJob;
 var config = require('./config')
 var Nightmare = require('nightmare');
+var rp = require('request-promise');
 var randomNumber;
 var user;
 var words;
+var indexPointer = Math.floor(Math.random()*5);;
+var counter = 0;
+var platform;
 
 var job = new CronJob('* * 10-18/2 * *', function() {
-    user = users[randomNumber]
-    console.log(user)
-    action(user);
-    randomNumber++
-    if (randomNumber >= users.length) randomNumber = 0;
+    if(counter<=4) platform = config.desktop;
+    else if(counter>4) platform = config.mobile;
+    action(config.users[indexPointer],platform);
+    indexPointer++;
+    counter++;
+    if(counter===10)counter = 0;
+    if(indexPointer===config.users.length) indexPointer=0;
 
-}, null, true).start();
-// if mobile config.mobileuseragent || 
+}, null, true,'America/New_York')
+
 var action = function(user, platformConfig) {
     rp(config.wordsEndpoint)
         .then(function(wordList) {
@@ -31,7 +37,6 @@ var action = function(user, platformConfig) {
                         partition: 'nopersist'
                     }
                 })
-                // give it a desktop user agent mac
             nightmare
                 .useragent(platformConfig.userAgent)
                 .viewport(1000, 700)
@@ -64,6 +69,5 @@ var action = function(user, platformConfig) {
                 .catch(function(err) {
                     console.log("err " + err)
                 })
-
         })
 }
