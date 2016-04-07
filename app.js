@@ -9,7 +9,7 @@ var indexPointer = Math.floor(Math.random()*5);;
 var counter = 0;
 var platform;
 
-var job = new CronJob('* * 10-18/2 * *', function() {
+var job = new CronJob('* * 8-18/1 * *', function() {
     if(counter<=4) platform = config.desktop;
     else if(counter>4) platform = config.mobile;
     action(config.users[indexPointer],platform);
